@@ -2,7 +2,9 @@ import Log from '@shared/log';
 import { STATUS_CODES } from 'http';
 import { verify } from 'jsonwebtoken';
 
-import * as Errors from './errors';
+import * as InternalUseCases from '@app/domains/internal/use-cases';
+import * as DomainErrors from '@shared/errors';
+import * as HTTPErrors from './errors';
 
 import type { Logger } from 'pino';
 import type { Middleware, Context } from 'koa';
@@ -63,6 +65,33 @@ export const globalErrorHandler = (): Middleware => async (ctx, next) => {
   }
 };
 
+export const errorLogger =
+  (msg: string): Middleware =>
+  async (_, next) => {
+    try {
+      await next();
+    } catch (e) {
+      Log.warn({ err: e }, msg);
+      throw e;
+    }
+  };
+
+export const mapDomainErrorsToHTTP = (): Middleware => async (ctx, next) => {
+  try {
+    await next();
+  } catch (e: unknown) {
+    if (e instanceof DomainErrors.UnknownError) {
+      throw new HTTPErrors.Internal(e);
+    }
+
+    if (e instanceof DomainErrors.BadInput) {
+      throw new HTTPErrors.BadInput(e.reason, e);
+    }
+
+    throw new HTTPErrors.Internal(e as Error);
+  }
+};
+
 export const authenticate =
   (secret: string): Middleware =>
   async (ctx, next) => {
@@ -76,17 +105,56 @@ export const authenticate =
       return next();
     }
 
-    const data = await verify(token, secret);
+    try {
+      const data = await verify(token, secret);
 
-    ctx.state.user = data;
+      ctx.state.user = data;
+    } catch (e) {
+      // swallow error if we have invalid token
+    }
 
     return next();
   };
 
 export const onlyAuthenticated = (): Middleware => (ctx, next) => {
   if (!ctx.state.user) {
-    throw new Errors.NeedAuthentication();
+    throw new HTTPErrors.NeedAuthentication();
   }
 
   return next();
 };
+
+export const onlyIfUserIsAllowed =
+  (action: string): Middleware =>
+  async (ctx, next) => {
+    if (!ctx.state.user) {
+      Log.warn('No User Authenticated. Cannot authorize anything');
+
+      throw new HTTPErrors.NotAuthorized();
+    }
+
+    if (!ctx.state.user.id) {
+      Log.warn(
+        { user: ctx.state.user },
+        'User missing ID. Cannot authorize anything'
+      );
+
+      throw new HTTPErrors.NotAuthorized();
+    }
+
+    const isAllowed = await InternalUseCases.isUserAllowedToPerformAction(
+      ctx.state.user.id,
+      action
+    );
+
+    if (isAllowed) {
+      return next();
+    }
+
+    Log.warn(
+      { user: ctx.state.user, action },
+      `User is not authorized to perform action "${action}"`
+    );
+
+    throw new HTTPErrors.NotAuthorized();
+  };

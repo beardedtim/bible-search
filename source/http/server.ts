@@ -15,6 +15,17 @@ server
     })
   )
   .use(Middleware.globalErrorHandler())
+  /**
+   * This needs to go before the mapping so that
+   * it logs only the http errors
+   */
+  .use(Middleware.errorLogger('HTTP Error'))
+  .use(Middleware.mapDomainErrorsToHTTP())
+  /**
+   * This needs to go after mapping so that it
+   * logs only domain errors
+   */
+  .use(Middleware.errorLogger('Domain Error'))
   .use(Middleware.authenticate(Env.jwtSecret))
   .use(Router.routes());
 

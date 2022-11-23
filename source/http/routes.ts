@@ -1,5 +1,9 @@
-import * as InternalUseCases from '@app/domains/internal/use-cases';
+import BodyParser from 'koa-bodyparser';
 
+import * as InternalUseCases from '@app/domains/internal/use-cases';
+import * as UserUseCases from '@app/domains/users/use-cases';
+
+import * as HTTPMiddleware from './middleware';
 import type { Middleware } from 'koa';
 
 interface Route {
@@ -53,4 +57,20 @@ export const testJWT: Route = {
 
     ctx.body = { data: result };
   },
+};
+
+export const createUser: Route = {
+  method: 'post',
+  path: '/users',
+  handler: [
+    HTTPMiddleware.onlyAuthenticated(),
+    HTTPMiddleware.onlyIfUserIsAllowed('CREATE::USERS'),
+    BodyParser(),
+    async (ctx) => {
+      const result = await UserUseCases.create(ctx.request.body);
+
+      ctx.status = 201;
+      ctx.body = { data: result };
+    },
+  ],
 };

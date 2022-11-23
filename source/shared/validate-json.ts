@@ -1,17 +1,14 @@
 import Enjoi from 'enjoi';
+import type { ValidationError } from 'joi';
 
 const validateJSONSchema = (schema: any) => {
   const validator = Enjoi.schema(schema);
 
-  return <T = any>(valueToCheck: any) => {
-    const { error, value } = validator.validate(valueToCheck);
-
-    if (error) {
-      throw error;
-    }
-
-    return value as T;
-  };
+  return <T = any>(valueToCheck: any) =>
+    validator.validate(valueToCheck) as {
+      error?: ValidationError;
+      value: T;
+    };
 };
 
 export default validateJSONSchema;
