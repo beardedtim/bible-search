@@ -1,11 +1,25 @@
 #!/bin/sh
 
-echo "Building Docker Image for $1"
+#
+# Ensure that if any of our commands error, we do not continue
+#
+set -e;
+
+echo ""
+echo "🚧 Building Docker Image for $1"
+echo ""
 
 ./scripts/build-docker $1
+echo ""
+echo "🚧 Built Docker Image for $1"
+echo ""
 
-echo "Updating Helm Deployment"
+echo ""
+echo "🖥️  Updating Helm Deployment"
+echo ""
 
 ./scripts/deploy-chart $1
 
-echo "Should be all updated"
+echo ""
+echo "🖥️  Helm Deployment Updated"
+echo ""

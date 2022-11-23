@@ -4,4 +4,19 @@
 # $1 = First argumennt given :: the name of the folder in `helm` to
 # use as the deployment folder
 #
-helm upgrade bible-search-$1 helm/$1 --values helm/$1/values.yaml
+
+#
+# DEPLOYMENT_NAME :: The name of the helm deployment
+#
+DEPLOYMENT_NAME="bible-search-$1"
+DEPLOYMENT_CHART_FOLDER="helm/$1"
+
+echo "Installing Deployment $DEPLOYMENT_NAME found at $DEPLOYMENT_CHART_FOLDER"
+
+#
+# Install or upgrade the deployment
+#
+helm upgrade \
+  --install \
+  $DEPLOYMENT_NAME $DEPLOYMENT_CHART_FOLDER \
+  --values $DEPLOYMENT_CHART_FOLDER/values.yaml

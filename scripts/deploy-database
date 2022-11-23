@@ -1,4 +1,8 @@
 #!/bin/sh
 
 helm repo add database https://charts.bitnami.com/bitnami
-helm install database database/postgresql --values helm/database/values.yaml
+
+helm install database  \
+    --set postgresqlUsername=postgres \
+    --set postgresqlPassword=postgres \
+    bitnami/postgresql

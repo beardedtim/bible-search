@@ -75,8 +75,14 @@ env:
   - name: PORT
     value: "5000"
   - name: DB_USER
-    value: biblesearch
+    value: bible_search
   - name: DB_PASSWORD
-    value: some-super-secret-value
+    value: something-secret
   - name: JWT_SECRET
     value: super secret
+  - name: DB_HOST
+    value: database-postgresql
+  - name: DB_PORT
+    value: "5432"
+  - name: DB_NAME
+    value: bible_search

@@ -3,6 +3,8 @@ import BodyParser from 'koa-bodyparser';
 import * as InternalUseCases from '@app/domains/internal/use-cases';
 import * as UserUseCases from '@app/domains/users/use-cases';
 
+import DB from '@app/connections/database';
+
 import * as HTTPMiddleware from './middleware';
 import type { Middleware } from 'koa';
 
@@ -25,7 +27,7 @@ export const liveness: Route = {
   method: 'get',
   path: '/.well-known/liveness',
   handler: async (ctx) => {
-    if (InternalUseCases.isSystemAlive()) {
+    if (await InternalUseCases.isSystemAlive(DB)) {
       ctx.status = 200;
       ctx.body = 'Alive';
     } else {
@@ -39,7 +41,7 @@ export const readiness: Route = {
   method: 'get',
   path: '/.well-known/readiness',
   handler: async (ctx) => {
-    if (InternalUseCases.isSystemAlive()) {
+    if (await InternalUseCases.isSystemAlive(DB)) {
       ctx.status = 200;
       ctx.body = 'Ready';
     } else {
