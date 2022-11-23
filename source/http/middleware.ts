@@ -1,5 +1,9 @@
 import Log from '@shared/log';
 import { STATUS_CODES } from 'http';
+import { verify } from 'jsonwebtoken';
+
+import * as Errors from './errors';
+
 import type { Logger } from 'pino';
 import type { Middleware, Context } from 'koa';
 
@@ -57,4 +61,32 @@ export const globalErrorHandler = (): Middleware => async (ctx, next) => {
       },
     };
   }
+};
+
+export const authenticate =
+  (secret: string): Middleware =>
+  async (ctx, next) => {
+    if (!ctx.headers.authorization) {
+      return next();
+    }
+
+    const token = ctx.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+      return next();
+    }
+
+    const data = await verify(token, secret);
+
+    ctx.state.user = data;
+
+    return next();
+  };
+
+export const onlyAuthenticated = (): Middleware => (ctx, next) => {
+  if (!ctx.state.user) {
+    throw new Errors.NeedAuthentication();
+  }
+
+  return next();
 };

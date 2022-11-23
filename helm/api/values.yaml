@@ -74,3 +74,9 @@ env:
     value: trace
   - name: PORT
     value: "5000"
+  - name: DB_USER
+    value: biblesearch
+  - name: DB_PASSWORD
+    value: some-super-secret-value
+  - name: JWT_SECRET
+    value: super secret

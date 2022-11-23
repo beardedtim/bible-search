@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#
+# $1 = First argumennt given :: the name of the folder in `helm` to
+# use as the deployment folder
+#
+helm upgrade bible-search-$1 helm/$1 --values helm/$1/values.yaml

@@ -6,7 +6,11 @@ const router = new Router();
 
 for (const [routeName, routeConfig] of Object.entries(Routes)) {
   Log.trace({ routeName, routeConfig }, `Add ${routeName}`);
-  router[routeConfig.method](routeConfig.path, routeConfig.handler);
+  const middlewareList = Array.isArray(routeConfig.handler)
+    ? routeConfig.handler
+    : [routeConfig.handler];
+
+  router[routeConfig.method](routeConfig.path, ...middlewareList);
 }
 
 export default router;

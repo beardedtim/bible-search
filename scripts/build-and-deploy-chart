@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Building Docker Image for $1"
+
+./scripts/build-docker $1
+
+echo "Updating Helm Deployment"
+
+./scripts/deploy-chart $1
+
+echo "Should be all updated"

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-helm upgrade bible-search-api helm/api --values helm/api/values.yaml

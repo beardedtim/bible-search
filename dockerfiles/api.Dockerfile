@@ -26,4 +26,4 @@ COPY --from=BUILD /app/dist/ /app/dist/
 
 EXPOSE 5000
 
-CMD ["node", "-r", "tsconfig-paths/register", "dist/start.js"]
+CMD ["node", "-r", "tsconfig-paths/register", "dist/source/start.js"]

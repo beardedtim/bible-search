@@ -1,4 +1,4 @@
-const processOr = (key: string, fallback: unknown) => {
+const processOr = (key: string, fallback?: any) => {
   if (key in process.env) {
     return process.env[key];
   }
@@ -15,3 +15,4 @@ const processOr = (key: string, fallback: unknown) => {
 export const port = processOr('PORT', 5000);
 export const logLevel = processOr('LOG_LEVEL', 'trace');
 export const serviceName = processOr('SERVICE_NAME', 'UNKNOWN');
+export const jwtSecret = processOr('JWT_SECRET');

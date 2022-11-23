@@ -1,6 +1,9 @@
 import Koa from 'koa';
+import * as Env from '@shared/env';
+
 import * as Middleware from './middleware';
 import Router from './router';
+
 const server = new Koa();
 
 server
@@ -12,6 +15,7 @@ server
     })
   )
   .use(Middleware.globalErrorHandler())
+  .use(Middleware.authenticate(Env.jwtSecret))
   .use(Router.routes());
 
 export default server;
