@@ -18,7 +18,6 @@ const main = () => {
 };
 
 process
-  .on('SIGINT', Manager.shutdown)
   .on('SIGTERM', Manager.shutdown)
   .on('uncaughtException', Manager.error)
   .on('unhandledRejection', Manager.error);

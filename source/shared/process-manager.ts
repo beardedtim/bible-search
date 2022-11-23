@@ -27,6 +27,7 @@ class Manager {
     }
 
     Log.info({ reason }, 'Handlers called. Releasing');
+    process.exit(0);
   }
 
   async error(err: Error) {
@@ -36,9 +37,13 @@ class Manager {
       await handler(err);
     }
 
-    Log.debug({ err }, 'Error Handlers caled. Calling shutdown');
+    Log.debug({ err }, 'Error Handlers caled. Calling shutdown handlers');
 
-    return this.shutdown({ error: err });
+    for (const handler of this.#closeHandlers.values()) {
+      await handler(err);
+    }
+
+    process.exit(1);
   }
 }
 
