@@ -1,10 +1,10 @@
 import * as DomainErrors from '@shared/errors';
 
-import validate from './validate';
-import type { User } from './schema';
+import validators from './validate';
+import type { CreateUser } from './schema';
 
 export const create = async (input: unknown) => {
-  const { error, value } = validate<User>(input);
+  const { error, value } = validators.create<CreateUser>(input);
 
   if (error) {
     throw new DomainErrors.BadInput(error.message, error);

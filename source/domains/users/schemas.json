@@ -1,0 +1,75 @@
+{
+  "database": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "DatabaseUser",
+    "id": "DatabaseUser",
+    "description": "User of the Bible Search system",
+    "type": "object",
+    "required": ["email", "password", "created_at", "meta", "id"],
+    "properties": {
+      "id": { "$ref": "#/$defs/User.id" },
+      "email": { "$ref": "#/$defs/User.email" },
+      "password": { "$ref": "#/$defs/User.password" },
+      "meta": { "$ref": "#/$defs/User.meta" },
+      "created_at": { "$ref": "#/$defs/User.created_at" }
+    }
+  },
+  "publicRead": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "PublicReadUser",
+    "id": "PublicReadUser",
+    "description": "What we make available to the general public",
+    "type": "object",
+    "required": ["email", "created_at", "meta", "id"],
+    "properties": {
+      "id": { "$ref": "#/$defs/User.id" },
+      "email": { "$ref": "#/$defs/User.email" },
+      "meta": { "$ref": "#/$defs/User.meta" },
+      "created_at": { "$ref": "#/$defs/User.created_at" }
+    }
+  },
+  "create": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "CreateUser",
+    "id": "CreateUser",
+    "description": "The input needed from the Client to create a User",
+    "type": "object",
+    "required": ["email", "password"],
+    "properties": {
+      "email": { "$ref": "#/$defs/User.email" },
+      "meta": { "$ref": "#/$defs/User.meta" },
+      "password": { "$ref": "#/$defs/User.password" }
+    }
+  },
+  "$defs": {
+    "User.id": {
+      "title": "UserID",
+      "type": "string",
+      "format": "uuid",
+      "description": "The UUID of the User"
+    },
+    "User.password": {
+      "title": "UserPassword",
+      "type": "string",
+      "minLength": "6",
+      "description": "Password. If used in Database, it is Hashed. If in Client Input, it is plaintext"
+    },
+    "User.email": {
+      "title": "UserEmail",
+      "type": "string",
+      "format": "email",
+      "description": "The Email of the User"
+    },
+    "User.meta": {
+      "title": "UserMeta",
+      "type": "object",
+      "description": "The User-added information such as Avatar and Phone/Address"
+    },
+    "User.created_at": {
+      "title": "UserCreatedAt",
+      "type": "string",
+      "format": "date-time",
+      "description": "When the User was actually saved into the Database"
+    }
+  }
+}

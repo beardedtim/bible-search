@@ -23,3 +23,11 @@ You will need to have the Database deployed and reachable
 ```sh
 ./scripts/build-and-deploy api
 ```
+
+# Creating Schemas
+
+For each `domain` you can create a `schemas.json` file. That will autogenerate Typescript files along
+with Joi validators based upon the files defined as top-level keys of that object. You can also attach
+a `$defs` key to have in-line definitions. 
+
+Look at `source/domains/users/schemas.json` for more information
